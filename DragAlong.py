@@ -6,18 +6,23 @@ def main():
     #inputVals['path'] = "C:\Users\Jon\OneDrive - Linköpings universitet\Kurser\TDTS11 - Datornät och internetprotokoll\Laborationer\Assignment 4\task 3\Question 2\2. xinhuanet.com\trace_xihuanet.com.pcapng"
     #inputVals['ipv6'] = "2001:6b0:17:fc09:549e:2d94:15d3:f3cb"
     #inputVals['ipv4'] = "10.253.235.173"
-    ttls = sharker(inputVals['path'], inputVals['ipv6'], inputVals['ipv4'])
-    avghops = calcAvgHopLen(ttls['ttl'], ttls['hoplimit'])
+    initalRqttls = sharker(inputVals['path'], inputVals['ipv6'], inputVals['ipv4'], inputVals['tcpStream'], True)
+    dragAlongttls = sharker(inputVals['path'], inputVals['ipv6'], inputVals['ipv4'], inputVals['tcpStream'], False)
 
-    print("Avgrage hop length: ", avghops)
+    print("Avgrage hop length for dragalong: ", calcAvgHopLen(dragAlongttls['ttl'], dragAlongttls['hoplimit']))
+    print("Avgrage hop length for inital request: ", calcAvgHopLen(initalRqttls['ttl'], initalRqttls['hoplimit']))
 
 
 def sharker(path, ipv6, ipv4, tcpStream, initalRq):
+    validInitalRq = [True, False]
+    if initalRq not in validInitalRq:
+        raise ValueError("initalRq must be True or False")
+
     cmdTsharkTTL = ["tshark", "-r", path, '-T', 'fields', '-e', 'ip.ttl', '-Y', '!ip.src eq ' + ipv4 + ' && !ipv6.src eq ' + ipv6 + ' && !tcp.stream eq ' + tcpStream]
     cmdTsharkHopLimit = ["tshark", "-r", path, '-T', 'fields', '-e', 'ipv6.hlim', '-Y', '!ip.src eq ' + ipv4 + ' && !ipv6.src eq ' + ipv6 + ' && !tcp.stream eq ' + tcpStream]
 
     if (initalRq):
-        cmdTsharkTTL = ["tshark", "-r", path, '-T', 'fields', '-e', 'ip.ttl', '-Y', '!ip.src eq '+ipv4+' && !ipv6.src eq ' + ipv6 + 'tcp.stream eq ' + tcpStream]
+        cmdTsharkTTL = ["tshark", "-r", path, '-T', 'fields', '-e', 'ip.ttl', '-Y', '!ip.src eq '+ipv4+' && !ipv6.src eq ' + ipv6 + ' && tcp.stream eq ' + tcpStream]
 
     if (initalRq):
         cmdTsharkHopLimit = ["tshark", "-r", path, '-T', 'fields', '-e', 'ipv6.hlim', '-Y', '!ip.src eq ' + ipv4 + ' && !ipv6.src eq ' + ipv6 + ' && tcp.stream eq ' + tcpStream]
