@@ -7,7 +7,7 @@ def main():
     allcontent = sharker(inputVals['path'], inputVals['tcpStream'])
     allcontent = getContentType(allcontent)
 
-    print("The drag along content types for the trace are:")
+    print("\nThe drag along content types for the trace are:")
     for i in allcontent:
         print(i)
 
