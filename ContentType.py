@@ -11,11 +11,10 @@ def main():
     for i in allcontent:
         print(i)
 
-    print(getContentType(allcontent))
 
 def sharker(path, tcpStream):
 
-    cmdTshark = ["tshark", "-r", path, '-T', 'fields', '-e', 'http.content_type', '-Y', 'http.content_type && tcp.stream eq '+ tcpStream]
+    cmdTshark = ["tshark", "-r", path, '-T', 'fields', '-e', 'http.content_type', '-Y', 'http.content_type && !tcp.stream eq '+ tcpStream]
 
     contentTypes = subprocess.check_output(cmdTshark, shell=True)
 
