@@ -2,15 +2,18 @@ from functools import total_ordering
 import subprocess
 
 def main():
-    inputVals = inputs()
+    paths, ipv4s, ipv6s, tcpStreams = inputs()
     #inputVals['path'] = "C:\Users\Jon\OneDrive - Linköpings universitet\Kurser\TDTS11 - Datornät och internetprotokoll\Laborationer\Assignment 4\task 3\Question 2\2. xinhuanet.com\trace_xihuanet.com.pcapng"
     #inputVals['ipv6'] = "2001:6b0:17:fc09:549e:2d94:15d3:f3cb"
     #inputVals['ipv4'] = "10.253.235.173"
-    initalRqttls = sharker(inputVals['path'], inputVals['ipv6'], inputVals['ipv4'], inputVals['tcpStream'], True)
-    dragAlongttls = sharker(inputVals['path'], inputVals['ipv6'], inputVals['ipv4'], inputVals['tcpStream'], False)
 
-    print("Avgrage hop length for dragalong: ", calcAvgHopLen(dragAlongttls['ttl'], dragAlongttls['hoplimit']))
-    print("Avgrage hop length for inital request: ", calcAvgHopLen(initalRqttls['ttl'], initalRqttls['hoplimit']))
+    for path, ipv4, ipv6, tcpStream in zip(paths, ipv4s, ipv6s, tcpStreams):
+        initalRqttls = sharker(path, ipv6, ipv4, tcpStream, True)
+        dragAlongttls = sharker(path, ipv6, ipv4, tcpStream, False)
+        
+        print("\nFor the tracefile: " + path)
+        print("Avgrage hop length for dragalong: ", calcAvgHopLen(dragAlongttls['ttl'], dragAlongttls['hoplimit']))
+        print("Avgrage hop length for inital request: ", calcAvgHopLen(initalRqttls['ttl'], initalRqttls['hoplimit']))
 
 
 def sharker(path, ipv6, ipv4, tcpStream, initalRq):
@@ -74,16 +77,22 @@ def calcAvgHopLen(ttl, hoplimit):
     return round((totalHops / hopsLen), 2) 
 
 def inputs():
-    path = input("Path to tracefile: ")
-    ipv4 = input("Your ipv4 address in trace: ")
-    ipv6 = input("Your ipv6 address in trace: ")
-    tcpStream = input("TCP-Stream id of inital request: ")
-    return {
-        "path": path, 
-        "ipv6": ipv6,
-        "ipv4": ipv4,
-        "tcpStream": tcpStream
-    }
+
+    totalOfTraces = int(input("How many traces do you want to check? "))
+
+    paths = list()
+    ipv4s = list()
+    ipv6s = list()
+    tcpStreams = list()
+
+    for i in range(totalOfTraces):
+        print("\nInfo for the " + str((i + 1)) + " trace")
+        paths.append(input("Path to tracefile: "))
+        ipv4s.append(input("Your ipv4 address in trace: "))
+        ipv6s.append(input("Your ipv6 address in trace: "))
+        tcpStreams.append(input("TCP-Stream id of inital request: "))
+    
+    return paths, ipv4s, ipv6s, tcpStreams
 
 
 main()
