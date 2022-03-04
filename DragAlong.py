@@ -45,7 +45,7 @@ def sharker(path, ipv6, ipv4, tcpStream, initalRq):
     }
 
 def calcAvgHopLen(ttl, hoplimit):
-    STD_TTL_VALS = [255, 64, 128]
+    STD_TTL_VALS = [255, 128, 64]
 
     hops = list()
 
