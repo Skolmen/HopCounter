@@ -3,9 +3,6 @@ import subprocess
 
 def main():
     paths, ipv4s, ipv6s, tcpStreams = inputs()
-    #inputVals['path'] = "C:\Users\Jon\OneDrive - Linköpings universitet\Kurser\TDTS11 - Datornät och internetprotokoll\Laborationer\Assignment 4\task 3\Question 2\2. xinhuanet.com\trace_xihuanet.com.pcapng"
-    #inputVals['ipv6'] = "2001:6b0:17:fc09:549e:2d94:15d3:f3cb"
-    #inputVals['ipv4'] = "10.253.235.173"
 
     for path, ipv4, ipv6, tcpStream in zip(paths, ipv4s, ipv6s, tcpStreams):
         initalRqttls = sharker(path, ipv6, ipv4, tcpStream, True)
