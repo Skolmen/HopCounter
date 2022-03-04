@@ -9,7 +9,7 @@ def main():
     ttls = sharker(inputVals['path'], inputVals['ipv6'], inputVals['ipv4'])
     avghops = calcAvgHopLen(ttls['ttl'], ttls['hoplimit'])
 
-    print(avghops)
+    print("Avgrage hop length: ", avghops)
 
 
 def sharker(path, ipv6, ipv4):
@@ -57,7 +57,7 @@ def calcAvgHopLen(ttl, hoplimit):
     for i in hops:
         totalHops += i
 
-    return totalHops / hopsLen 
+    return round((totalHops / hopsLen), 2) 
 
 def inputs():
     path = input("Path to tracefile: ")
