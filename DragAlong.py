@@ -12,14 +12,23 @@ def main():
     print("Avgrage hop length: ", avghops)
 
 
-def sharker(path, ipv6, ipv4):
-    ttl = subprocess.check_output(["tshark", "-r", path, '-T', 'fields', '-e', 'ip.ttl', '-Y', '!ip.src eq '+ipv4+' && !ipv6.src eq '+ipv6], shell=True)
+def sharker(path, ipv6, ipv4, tcpStream, initalRq):
+    cmdTsharkTTL = ["tshark", "-r", path, '-T', 'fields', '-e', 'ip.ttl', '-Y', '!ip.src eq ' + ipv4 + ' && !ipv6.src eq ' + ipv6 + ' && !tcp.stream eq ' + tcpStream]
+    cmdTsharkHopLimit = ["tshark", "-r", path, '-T', 'fields', '-e', 'ipv6.hlim', '-Y', '!ip.src eq ' + ipv4 + ' && !ipv6.src eq ' + ipv6 + ' && !tcp.stream eq ' + tcpStream]
+
+    if (initalRq):
+        cmdTsharkTTL = ["tshark", "-r", path, '-T', 'fields', '-e', 'ip.ttl', '-Y', '!ip.src eq '+ipv4+' && !ipv6.src eq ' + ipv6 + 'tcp.stream eq ' + tcpStream]
+
+    if (initalRq):
+        cmdTsharkHopLimit = ["tshark", "-r", path, '-T', 'fields', '-e', 'ipv6.hlim', '-Y', '!ip.src eq ' + ipv4 + ' && !ipv6.src eq ' + ipv6 + ' && tcp.stream eq ' + tcpStream]
+
+    ttl = subprocess.check_output(cmdTsharkTTL, shell=True)
     ttl = ttl.split(b'\r\n')
     ttl = [i.decode('utf-8') for i in ttl]
     ttl = list(filter(None, ttl))
     ttl = list(map(int, ttl))
     
-    hoplimit = subprocess.check_output(["tshark", "-r", path, '-T', 'fields', '-e', 'ipv6.hlim', '-Y', '!ip.src eq '+ipv4+' && !ipv6.src eq '+ipv6], shell=True)
+    hoplimit = subprocess.check_output(cmdTsharkHopLimit, shell=True)
     hoplimit = hoplimit.split(b'\r\n')
     hoplimit = [i.decode('utf-8') for i in hoplimit]
     hoplimit = list(filter(None, hoplimit))
@@ -63,10 +72,12 @@ def inputs():
     path = input("Path to tracefile: ")
     ipv4 = input("Your ipv4 address in trace: ")
     ipv6 = input("Your ipv6 address in trace: ")
+    tcpStream = input("TCP-Stream id of inital request: ")
     return {
         "path": path, 
         "ipv6": ipv6,
-        "ipv4": ipv4
+        "ipv4": ipv4,
+        "tcpStream": tcpStream
     }
 
 
