@@ -1,14 +1,18 @@
 import subprocess
 
 def main():
-    inputVals = inputs()
+    paths, tcpStreams = inputs()
+    
     #inputVals['path'] = "C:\Users\Jon\OneDrive - Linköpings universitet\Kurser\TDTS11 - Datornät och internetprotokoll\Laborationer\Assignment 4\task 3\Question 2\2. xinhuanet.com\trace_xihuanet.com.pcapng"
-    allcontent = sharker(inputVals['path'], inputVals['tcpStream'])
-    allcontent = getContentType(allcontent)
+    
+    for path, tcpStream in zip(paths, tcpStreams):
+        allcontent = sharker(path, tcpStream)
+        allcontent = getContentType(allcontent)
 
-    print("\nThe drag along content types for the trace are:")
-    for i in allcontent:
-        print(i)
+        print("\nFor trace " + path)
+        print("The drag along content types are: ")
+        for i in allcontent:
+            print(i)
 
 
 def sharker(path, tcpStream):
@@ -27,12 +31,17 @@ def getContentType(allContent):
     return list(dict.fromkeys(allContent))
 
 def inputs():
-    path = input("Path to tracefile: ")
-    tcpStream = input("TCP-stream id of the inital request: ")
-    return {
-        "path": path,
-        "tcpStream": tcpStream
-    }
+
+    totOfTraces = int(input("How many traces do you want to check?"))
+
+    paths = list()
+    tcpStreams = list()
+
+    for i in range(totOfTraces):
+        paths.append(input("Path to tracefile: "))
+        tcpStreams.append(input("TCP-stream id of the inital request: "))
+
+    return paths, tcpStreams
 
 
 main()
