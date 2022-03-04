@@ -38,7 +38,7 @@ def inputs():
     tcpStreams = list()
 
     for i in range(totOfTraces):
-        paths.append(input("Path to tracefile: "))
+        paths.append(input("\nPath to tracefile: "))
         tcpStreams.append(input("TCP-stream id of the inital request: "))
 
     return paths, tcpStreams
